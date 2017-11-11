@@ -25,4 +25,4 @@ print qso_data.Operator.unique()
 ...
 ```
 
-Might become more of a module that could be used in a production situation in the future, and will then be moved to github.com/la1k/. 
+Might become more of a module that could be used in a production situation in the future, and will then be moved to http://github.com/la1k/. 
