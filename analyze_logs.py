@@ -14,14 +14,14 @@ import pathlib
 import cartopy.crs as ccrs
 import cartopy.io.shapereader as shpreader
 
-"""
-Get all N1MM logs in all subfolders, subsubfolders, ... of the input path.
-
-\param station_call Station callsign
-\param input_path Root path for search
-\return Logs as a pandas dataframe
-"""
 def get_n1mm_logs_in_path(input_path):
+    """
+    Get all N1MM logs in all subfolders, subsubfolders, ... of the input path.
+
+    \param station_call Station callsign
+    \param input_path Root path for search
+    \\return Logs as a pandas dataframe
+    """
     qso_data = pd.DataFrame()
 
     #collect all .s3db-files containing ham logs into a large pandas dataframe
@@ -37,13 +37,13 @@ def get_n1mm_logs_in_path(input_path):
     qso_data = qso_data[qso_data.IsOriginal == 1]
     return qso_data
 
-"""
-Plot the number of QSOs per operator as a pie diagram.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qsos_per_operator_pie_chart(qso_data, filename):
+    """
+    Plot the number of QSOs per operator as a pie diagram.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     #get number of QSOs per operator
     operators_all, counts_all = np.unique(qso_data.Operator, return_counts=True)
 
@@ -66,13 +66,13 @@ def qsos_per_operator_pie_chart(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Plot the number of QSOs as a function of the time of the day.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_frequency_per_hour(qso_data, filename):
+    """
+    Plot the number of QSOs as a function of the time of the day.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     timestamps = pd.DatetimeIndex(qso_data.TS)
     plt.hist(timestamps.hour + timestamps.minute/60.0, bins=100)
     plt.xlabel('Hour of day')
@@ -80,13 +80,13 @@ def qso_frequency_per_hour(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Plot the number of QSOs as a function of the time of the day for the various operators in the log.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_frequency_per_hour_per_operator(qso_data, filename):
+    """
+    Plot the number of QSOs as a function of the time of the day for the various operators in the log.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     operators, counts = np.unique(qso_data.Operator, return_counts=True)
     operators = operators[counts/np.sum(counts) > 0.05]
     for operator in operators:
@@ -100,14 +100,14 @@ def qso_frequency_per_hour_per_operator(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Plot the number of QSOs as a function of the day since the first log entry.
-Mark with start of UKA and CQWWRTTY.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_frequency_per_day(qso_data, filename):
+    """
+    Plot the number of QSOs as a function of the day since the first log entry.
+    Mark with start of UKA and CQWWRTTY.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     timestamps = pd.DatetimeIndex(qso_data.TS)
     start_date = np.min(timestamps)
     timestamps = timestamps - start_date
@@ -130,14 +130,14 @@ def qso_frequency_per_day(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Plot the number of QSOs as a function of the day since the first log entry,
-for each operator in the log.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_frequency_per_day_per_operator(qso_data, filename):
+    """
+    Plot the number of QSOs as a function of the day since the first log entry,
+    for each operator in the log.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     operators, counts = np.unique(qso_data.Operator, return_counts=True)
     operators = operators[counts/np.sum(counts) > 0.01]
     for operator in operators:
@@ -155,13 +155,13 @@ def qso_frequency_per_day_per_operator(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Plot the number of QSOs as a function of the time of the day, for each frequency band in the log.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_frequency_per_hour_per_band(qso_data, filename):
+    """
+    Plot the number of QSOs as a function of the time of the day, for each frequency band in the log.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     for band in qso_data.Band.unique():
         timestamps = pd.DatetimeIndex(qso_data[qso_data.Band == band].TS)
         timestamps = timestamps.hour + timestamps.minute/60.0
@@ -174,14 +174,14 @@ def qso_frequency_per_hour_per_band(qso_data, filename):
     plt.savefig(filename)
     plt.clf()
 
-"""
-Get ITU mapping of callsign prefix to country name. Will, unless file exists,
-obtain the current table from ITU website (URL could be subject to change,
-could fail) and download it to the current directory.
-
-\return ITU mapping from callsign prefix to country name as a pandas dataframe
-"""
 def get_itu_prefix_country_mapping():
+    """
+    Get ITU mapping of callsign prefix to country name. Will, unless file exists,
+    obtain the current table from ITU website (URL could be subject to change,
+    could fail) and download it to the current directory.
+
+    \\return ITU mapping from callsign prefix to country name as a pandas dataframe
+    """
     #check if ITU table has been downloaded, download if not
     itu_mapping_filename = 'CallSigns'
     if not pathlib.Path(itu_mapping_filename).is_file():
@@ -201,14 +201,14 @@ def get_itu_prefix_country_mapping():
     itu_mapping = itu_mapping.reindex(index=prefix.index, level=0).join(prefix, how='inner')[['country', 'prefix']].reset_index(drop=True)
     return itu_mapping
 
-"""
-Convert callsign to a country name.
-
-\param itu_mapping ITU mapping of prefix to country
-\param callsign Callsign
-\return Country name
-"""
 def country_from_callsign(itu_mapping, callsign):
+    """
+    Convert callsign to a country name.
+
+    \param itu_mapping ITU mapping of prefix to country
+    \param callsign Callsign
+    \\return Country name
+    """
     if len(callsign) <= 0:
         return str(None)
 
@@ -218,13 +218,13 @@ def country_from_callsign(itu_mapping, callsign):
         return str(None)
     return country_candidates[0]
 
-"""
-Mark on a world map which countries are present in the log.
-
-\param qso_data QSO log data
-\param filename Output filename of plot
-"""
 def qso_country_map(qso_data, filename):
+    """
+    Mark on a world map which countries are present in the log.
+
+    \param qso_data QSO log data
+    \param filename Output filename of plot
+    """
     itu_mapping = get_itu_prefix_country_mapping()
 
     #find country names from the prefixes in the logs
