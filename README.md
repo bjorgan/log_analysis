@@ -20,7 +20,7 @@ The functions can also be imported to another Python script using
 ```
 import analyze_logs
 
-qso_data = get_n1mm_logs_in_path('/path/to/log/folder/')
+qso_data = analyze_logs.get_n1mm_logs_in_path('/path/to/log/folder/')
 print qso_data.Operator.unique()
 ...
 ```
